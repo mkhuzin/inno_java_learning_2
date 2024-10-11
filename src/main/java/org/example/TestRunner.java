@@ -7,13 +7,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class TestRunner {
 
 	private static List<Method> getAnnotatedMethods(
 			Class<?> c,
 			Class<? extends Annotation> annotationClass,
-			int maxCount,
+			BiConsumer<Class<?>, Class<? extends Annotation>> classAndAnnotationClassValidator,
+			BiConsumer<Method, Class<? extends Annotation>> methodAndAnnotationClassValidator,
 			Comparator<Method> comparator
 	) {
 
@@ -22,21 +24,24 @@ public class TestRunner {
 		List<Method> annotatedMethodList = new ArrayList<>();
 
 		for (Method method : methodArray)
-			if (method.getAnnotation(annotationClass) != null)
+
+			if (method.getAnnotation(annotationClass) != null) {
+
+				if (methodAndAnnotationClassValidator != null)
+					methodAndAnnotationClassValidator.accept(
+							method,
+							annotationClass
+					);
+
 				annotatedMethodList.add(method);
 
-		if (maxCount > 0 && annotatedMethodList.size() > maxCount) {
+			}
 
-			String exceptionMessage = String.format(
-					"Количество методов с аннотацией @%s: %s. Допускается не более %s",
-					annotationClass.getSimpleName(),
-					annotatedMethodList.size(),
-					maxCount
+		if (classAndAnnotationClassValidator != null)
+			classAndAnnotationClassValidator.accept(
+					c,
+					annotationClass
 			);
-
-			throw new RuntimeException(exceptionMessage);
-
-		}
 
 		if (comparator != null)
 			annotatedMethodList.sort(comparator);
@@ -164,7 +169,8 @@ public class TestRunner {
 		List<Method> methodList = getAnnotatedMethods(
 				c,
 				BeforeSuite.class,
-				1,
+				new SingleMethodAnnotationClassValidator(),
+				new StaticMethodAndAnnotationClassValidator(),
 				null
 		);
 
@@ -173,7 +179,8 @@ public class TestRunner {
 		methodList = getAnnotatedMethods(
 				c,
 				Test.class,
-				0,
+				null,
+				new NonStaticMethodAndAnnotationClassValidator(),
 				new TestMethodComparator()
 		);
 
@@ -182,7 +189,8 @@ public class TestRunner {
 		methodList = getAnnotatedMethods(
 				c,
 				AfterSuite.class,
-				1,
+				new SingleMethodAnnotationClassValidator(),
+				new StaticMethodAndAnnotationClassValidator(),
 				null
 		);
 

@@ -3,7 +3,7 @@ package org.example;
 public class Tests {
 
 	@BeforeSuite
-	public void beforeTests() {
+	static void beforeTests() {
 		System.out.println("beforeTests");
 	}
 
@@ -33,7 +33,7 @@ public class Tests {
 	}
 
 	@AfterSuite
-	public void afterTests() {
+	static void afterTests() {
 		System.out.println("afterTests");
 	}
 
