@@ -3,10 +3,10 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.example</groupId>
-	<artifactId>blank</artifactId>
+	<artifactId>inno_java_learning_2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>blank</name>
-	<description>blank</description>
+	<name>inno_java_learning_2</name>
+	<description>inno_java_learning_2</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -18,6 +18,12 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>5.10.2</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version>
 		</dependency>
 
 	</dependencies>
